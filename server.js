@@ -8,10 +8,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ABRIR A INTERFACE DO VENOM BLADE
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "Index.html"));
 });
 
+// CONEXÃO COM A INTELIGÊNCIA ARTIFICIAL
 app.post("/chat", async (req, res) => {
   try {
     const message = req.body.message;
@@ -50,6 +52,7 @@ app.post("/chat", async (req, res) => {
 
     if (!response.ok) {
       console.error("Erro da Groq:", data);
+
       return res.status(500).json({
         error: "Erro ao consultar a IA."
       });
@@ -61,12 +64,14 @@ app.post("/chat", async (req, res) => {
 
   } catch (error) {
     console.error("Erro:", error);
+
     res.status(500).json({
       error: "Erro no servidor."
     });
   }
 });
 
+// INICIAR SERVIDOR
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
