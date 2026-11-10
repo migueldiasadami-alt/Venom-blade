@@ -1,6 +1,7 @@
 
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
@@ -8,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("VENOM BLADE ONLINE 🖤");
+  res.sendFile(path.join(__dirname, "Index.html"));
 });
 
 app.post("/chat", async (req, res) => {
@@ -16,7 +17,9 @@ app.post("/chat", async (req, res) => {
     const { message } = req.body;
 
     if (!message) {
-      return res.status(400).json({ error: "Mensagem vazia" });
+      return res.status(400).json({
+        error: "Mensagem vazia"
+      });
     }
 
     const response = await fetch(
@@ -46,7 +49,9 @@ app.post("/chat", async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(500).json({ error: "Erro ao consultar a IA." });
+      return res.status(500).json({
+        error: "Erro ao consultar a IA."
+      });
     }
 
     res.json({
@@ -54,7 +59,9 @@ app.post("/chat", async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({ error: "Erro no servidor." });
+    res.status(500).json({
+      error: "Erro no servidor."
+    });
   }
 });
 
