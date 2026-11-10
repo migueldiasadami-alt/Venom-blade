@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 
 app.post("/chat", async (req, res) => {
   try {
-    const { message } = req.body;
+    const message = req.body.message;
 
     if (!message) {
       return res.status(400).json({
@@ -49,6 +49,7 @@ app.post("/chat", async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
+      console.error("Erro da Groq:", data);
       return res.status(500).json({
         error: "Erro ao consultar a IA."
       });
@@ -59,12 +60,15 @@ app.post("/chat", async (req, res) => {
     });
 
   } catch (error) {
+    console.error("Erro:", error);
     res.status(500).json({
       error: "Erro no servidor."
     });
   }
 });
 
-app.listen(process.env.PORT || 3000, "0.0.0.0", () => {
-  console.log("VENOM BLADE ONLINE");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("VENOM BLADE ONLINE NA PORTA " + PORT);
 });
