@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VENOM BLADE</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #050505;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+header {
+  padding: 22px;
+  text-align: center;
+  border-bottom: 1px solid #292929;
+  color: #e5e5e5;
+  letter-spacing: 4px;
+}
+header h1 { margin: 0; font-size: 25px; }
+#status { color: #48e58a; font-size: 12px; margin-top: 8px; }
+#chat {
+  height: calc(100dvh - 155px);
+  overflow-y: auto;
+  padding: 18px;
+}
+.message {
+  padding: 13px 15px;
+  margin: 12px 0;
+  border-radius: 12px;
+  max-width: 85%;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.user {
+  background: #202020;
+  margin-left: auto;
+}
+.bot {
+  background: #101010;
+  border: 1px solid #333;
+  margin-right: auto;
+}
+#area {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: #080808;
+  border-top: 1px solid #292929;
+}
+input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  background: #171717;
+  color: white;
+  outline: none;
+}
+button {
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  background: white;
+  color: black;
+  font-weight: bold;
+}
+button:disabled { opacity: .5; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>VENOM BLADE</h1>
+  <div id="status">● ONLINE</div>
+</header>
+
+<main id="chat">
+  <div class="message bot">Eu sou VENOM BLADE. Finalmente estamos conectados. 🖤</div>
+</main>
+
+<div id="area">
+  <input id="message" placeholder="Fale comigo..." autocomplete="off">
+  <button id="send">ENVIAR</button>
+</div>
+
+<script>
+const API = "https://venom-blade.onrender.com/chat";
+const chat = document.getElementById("chat");
+const input = document.getElementById("message");
+const send = document.getElementById("send");
+const statusText = document.getElementById("status");
+
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = "message " + type;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+async function sendMessage() {
+  const message = input.value.trim();
+  if (!message || send.disabled) return;
+
+  addMessage(message, "user");
+  input.value = "";
+  send.disabled = true;
+  statusText.textContent = "● PENSANDO...";
+
+  try {
+    const response = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Erro ao consultar a IA.");
+    }
+
+    addMessage(data.reply, "bot");
+    statusText.textContent = "● ONLINE";
+  } catch (error) {
+    addMessage("Não consegui responder agora. Tente novamente daqui a pouco.", "bot");
+    statusText.textContent = "● ERRO DE CONEXÃO";
+  } finally {
+    send.disabled = false;
+    input.focus();
+  }
+}
+
+send.addEventListener("click", sendMessage);
+input.addEventListener("keydown", event => {
+  if (event.key === "Enter") sendMessage();
+});
+</script>
+
+</body>
+</html>
