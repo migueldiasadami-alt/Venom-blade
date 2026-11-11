@@ -8,19 +8,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Página principal
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "Index.html"));
 });
 
-// Inteligência artificial
 app.post("/chat", async (req, res) => {
   try {
-    const message = req.body.message;
+    const { message } = req.body;
 
     if (!message) {
       return res.status(400).json({
-        error: "Mensagem vazia"
+        error: "Digite uma mensagem."
       });
     }
 
@@ -37,7 +35,11 @@ app.post("/chat", async (req, res) => {
           messages: [
             {
               role: "system",
-              content: "Você é VENOM BLADE, uma IA inteligente, misteriosa, sarcástica, divertida e natural. Fale português brasileiro. Use humor e gírias quando combinar. Seja útil e não invente informações."
+              content: `Você é VENOM BLADE, uma inteligência artificial
+              inteligente, misteriosa, sarcástica e engraçada.
+              Fale português brasileiro naturalmente.
+              Seja criativo, converse como uma IA com personalidade própria
+              e responda de forma clara e humana.`
             },
             {
               role: "user",
@@ -51,10 +53,9 @@ app.post("/chat", async (req, res) => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Erro da Groq:", data);
-
+      console.error(data);
       return res.status(500).json({
-        error: "Erro ao consultar a IA."
+        error: "Erro ao conversar com a inteligência."
       });
     }
 
@@ -63,15 +64,13 @@ app.post("/chat", async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Erro:", error);
-
+    console.error(error);
     res.status(500).json({
-      error: "Erro no servidor."
+      error: "Erro interno do VENOM BLADE."
     });
   }
 });
 
-// Iniciar servidor
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
