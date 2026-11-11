@@ -8,12 +8,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ABRIR A INTERFACE DO VENOM BLADE
+// Página principal
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "Index.html"));
 });
 
-// CONEXÃO COM A INTELIGÊNCIA ARTIFICIAL
+// Inteligência artificial
 app.post("/chat", async (req, res) => {
   try {
     const message = req.body.message;
@@ -71,7 +71,7 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-// INICIAR SERVIDOR
+// Iniciar servidor
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
